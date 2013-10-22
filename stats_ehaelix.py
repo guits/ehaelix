@@ -5,4 +5,9 @@ import subprocess
 import sys
 
 def exec_command_by_ssh(host, command):
-    subprocess.call(["ls"], "-l")
+	process = subprocess.Popen("ssh " + host + " '" + command + "'", stdout=subprocess.PIPE, stderr=None, shell=True)                                                                                                                                                          
+	output = process.communicate()
+	return output[0].split()
+
+test = exec_command_by_ssh("remy-web1.ext.hosting.enovance.com", "ls /home")
+print test
