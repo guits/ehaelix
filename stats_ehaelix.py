@@ -6,7 +6,7 @@ import sys
 
 host = "eno-eh9-b2.mut-8.hosting.enovance.com"
 
-def exec_command_by_ssh(host, command):
+def exec_command_host(host, command):
     process = subprocess.Popen("ssh %s '%s'" % (host, command), stdout=subprocess.PIPE, stderr=None, shell=True) 
     output = process.communicate()
 
@@ -19,7 +19,7 @@ def exec_command_on_vz(host, vz_id, command):
     return [ line for line in output[0].split("\n") if line != '' ]
 
 def get_vz_list(host):
-    vzlist_raw = exec_command_by_ssh(host, "vzlist -a -H -o ctid,hostname,status")
+    vzlist_raw = exec_command_host(host, "vzlist -a -H -o ctid,hostname,status")
     vzlist = []
     for vz in vzlist_raw:
         vzinfo = vz.split()
@@ -28,33 +28,78 @@ def get_vz_list(host):
 			'id': vzinfo[0],
 			'hostname': vzinfo[1],
 			'status': vzinfo[2],
-			'physical_host': host
+			'physical_host': host,
 			})
     return vzlist
 
 def get_cpu_info_vz(vz_id):
     command = "cat /proc/cpuinfo | grep 'cpu MHz'"
-    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    cpus = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    cpu = cpus.pop().split()
+    result = {
+        'nb': len(cpus),
+        'mhz': cpu[3],
+        'unit': cpu[1],
+    }
     return result
 
 def get_total_mem_info_vz(vz_id):
-    command = "cat /proc/cpuinfo | grep 'MemTotal'"
-    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    command = "cat /proc/meminfo | grep 'MemTotal'"
+    infos = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    info = infos.pop().split()
+    result = {
+        'name': info[0],
+        'size': info[1],
+        'unit': info[2],
+    }
     return result
 
-def get_free_mem_info_vz(vz_id):
-    command = "cat /proc/cpuinfo | grep 'MemFree'"
-    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+def get_vgs_infos(host):
+    lines_raw = exec_command_host(host, "vgs")
+    # delete first line
+    lines_raw = lines_raw[1:]
+    result = []
+    for line in lines_raw:
+        lineinfo = line.split()
+        result.append({
+            'name': lineinfo[0],
+            'size': lineinfo[5],
+            'free': lineinfo[6],
+        })
     return result
 
-def get_cached_mem_info_vz(vz_id):
-    command = "cat /proc/cpuinfo | grep 'MemFree'"
-    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+def get_lvs_infos(host):
+    lines_raw = exec_command_host(host, "lvs")
+    # delete first line
+    lines_raw = lines_raw[1:]
+    result = []
+    for line in lines_raw:
+        lineinfo = line.split()
+        result.append({
+            'name': lineinfo[0],
+            'vg': lineinfo[1],
+            'size': lineinfo[3],
+        })
+    return result
+
+def get_mount_infos(host):
+    lines_raw = exec_command_host(host, "mount")
+    result = []
+    for line in lines_raw:
+        lineinfo = line.split()
+        result.append({
+            'device': lineinfo[0],
+            'mount': lineinfo[2],
+        })
     return result
 
 vzlist = get_vz_list(host)
 
-for vz in vzlist:
-    cpuinfo = get_cpu_info_vz(vz['id'])
-    print vz['hostname']
-    print "Nombre de CPU: %s\n" % (len(cpuinfo))
+print(get_mount_infos(host))
+
+#for vz in vzlist:
+#    cpuinfo = get_cpu_info_vz(vz['id'])
+#    totalmem = get_total_mem_info_vz(vz['id'])
+#    print vz['hostname']
+#    print "\tCPUs: %s (%s %s)\n\tTotal Ram: %s" % (cpuinfo['nb'], cpuinfo['mhz'],
+#                                                  cpuinfo['unit'], totalmem['size'])
