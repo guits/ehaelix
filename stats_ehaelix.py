@@ -33,7 +33,7 @@ def get_vz_list(host):
     return vzlist
 
 def get_cpu_info_vz(vz_id):
-    command = "cat /proc/cpuinfo | grep 'cpu MHz'"
+    command = "grep 'cpu MHz' /proc/cpuinfo"
     cpus = exec_command_on_vz(vz['physical_host'], vz_id, command)
     cpu = cpus.pop().split()
     result = {
@@ -44,7 +44,7 @@ def get_cpu_info_vz(vz_id):
     return result
 
 def get_total_mem_info_vz(vz_id):
-    command = "cat /proc/meminfo | grep 'MemTotal'"
+    command = "grep 'MemTotal' /proc/meminfo"
     infos = exec_command_on_vz(vz['physical_host'], vz_id, command)
     info = infos.pop().split()
     result = {
