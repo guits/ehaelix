@@ -14,7 +14,7 @@ def exec_command_host(host, command):
 
 def exec_command_on_vz(host, vz_id, command):
 #	print "ssh %s \"vzctl exec %s \\\"%s\\\"\"" % (host, vz_id, command)
-    process = subprocess.Popen("ssh %s \"vzctl exec %s \\\"%s\\\"\"" % (host, vz_id, command), stdout=subprocess.PIPE, stderr=None, shell=True)
+    process = subprocess.Popen(r'ssh %s "vzctl exec %s \"%s\""' % (host, vz_id, command), stdout=subprocess.PIPE, stderr=None, shell=True)
     output = process.communicate()
     return [ line for line in output[0].split("\n") if line != '' ]
 
