@@ -94,9 +94,44 @@ def get_mount_infos(host):
         })
     return result
 
+def get_df_infos(host):
+    lines_raw = exec_command_host(host, "df -hP")
+    # delete first line
+    lines_raw = lines_raw[1:]
+    result = []
+    for line in lines_raw:
+        lineinfo = line.split()
+        result.append({
+            'device': lineinfo[0],
+            'size': lineinfo[1],
+            'used': lineinfo[2],
+            'available': lineinfo[3],
+            'use%': lineinfo[4],
+            'mount': lineinfo[5],
+        })
+    return result
+
+def get_df_vz_infos(host, vz_id):
+    lines_raw = exec_command_on_vz(host, vz_id, "df -hP")
+    # delete first line
+    lines_raw = lines_raw[1:]
+    result = []
+    for line in lines_raw:
+        lineinfo = line.split()
+        result.append({
+            'device': lineinfo[0],
+            'size': lineinfo[1],
+            'used': lineinfo[2],
+            'available': lineinfo[3],
+            'use%': lineinfo[4],
+            'mount': lineinfo[5],
+        })
+    return result
+
+
 vzlist = get_vz_list(host)
 
-print(get_mount_infos(host))
+print(get_df_vz_infos(host, "102"))
 
 #for vz in vzlist:
 #    cpuinfo = get_cpu_info_vz(vz['id'])
