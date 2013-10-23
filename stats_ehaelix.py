@@ -36,7 +36,21 @@ def get_cpu_info_vz(vz_id):
     command = "cat /proc/cpuinfo | grep 'cpu MHz'"
     result = exec_command_on_vz(vz['physical_host'], vz_id, command)
     return result
-		
+
+def get_total_mem_info_vz(vz_id):
+    command = "cat /proc/cpuinfo | grep 'MemTotal'"
+    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    return result
+
+def get_free_mem_info_vz(vz_id):
+    command = "cat /proc/cpuinfo | grep 'MemFree'"
+    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    return result
+
+def get_cached_mem_info_vz(vz_id):
+    command = "cat /proc/cpuinfo | grep 'MemFree'"
+    result = exec_command_on_vz(vz['physical_host'], vz_id, command)
+    return result
 
 vzlist = get_vz_list(host)
 
