@@ -90,6 +90,7 @@ def get_mount_infos(host):
         result.append({
             'device': lineinfo[0],
             'mount': lineinfo[2],
+            'type': lineinfo[4],
         })
     return result
 
