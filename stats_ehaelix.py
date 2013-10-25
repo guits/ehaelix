@@ -42,7 +42,7 @@ class Ehaelix(object):
     
     def get_cpu_info_vz(vz_id):
         command = "grep 'cpu MHz' /proc/cpuinfo"
-        cpus = self._cmd.exec_command_on_vz(vz['physical_host'], vz_id, command)
+        cpus = self._cmd.exec_command_on_vz(vz_id, command)
         cpu = cpus.pop().split()
         result = {
             'nb': len(cpus),
@@ -53,7 +53,7 @@ class Ehaelix(object):
     
     def get_total_mem_info_vz(vz_id):
         command = "grep 'MemTotal' /proc/meminfo"
-        infos = self._cmd.exec_command_on_vz(vz['physical_host'], vz_id, command)
+        infos = self._cmd.exec_command_on_vz(vz_id, command)
         info = infos.pop().split()
         result = {
             'name': info[0],
@@ -62,8 +62,8 @@ class Ehaelix(object):
         }
         return result
     
-    def get_vgs_infos(host):
-        lines_raw = self._cmd.exec_command_host(host, "vgs")
+    def get_vgs_infos():
+        lines_raw = self._cmd.exec_command_host("vgs")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
@@ -76,8 +76,8 @@ class Ehaelix(object):
             })
         return result
     
-    def get_lvs_infos(host):
-        lines_raw = self._cmd.exec_command_host(host, "lvs")
+    def get_lvs_infos():
+        lines_raw = self._cmd.exec_command_host("lvs")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
@@ -90,8 +90,8 @@ class Ehaelix(object):
             })
         return result
     
-    def get_mount_infos(host):
-        lines_raw = self._cmd.exec_command_host(host, "mount")
+    def get_mount_infos():
+        lines_raw = self._cmd.exec_command_host("mount")
         result = []
         for line in lines_raw:
             lineinfo = line.split()
@@ -102,8 +102,8 @@ class Ehaelix(object):
             })
         return result
     
-    def get_df_infos(host):
-        lines_raw = self._cmd.exec_command_host(host, "df -hP")
+    def get_df_infos():
+        lines_raw = self._cmd.exec_command_host("df -hP")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
@@ -119,8 +119,8 @@ class Ehaelix(object):
             })
         return result
     
-    def get_df_vz_infos(host, vz_id):
-        lines_raw = self._cmd.exec_command_on_vz(host, vz_id, "df -hP")
+    def get_df_vz_infos(vz_id):
+        lines_raw = self._cmd.exec_command_on_vz(vz_id, "df -hP")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
@@ -136,11 +136,10 @@ class Ehaelix(object):
             })
         return result
 
-srv = Ehaelix('"eno-eh9-b2.mut-8.hosting.enovance.com"')
+srv = Ehaelix("eno-eh9-b2.mut-8.hosting.enovance.com")
 
 vzlist = srv.get_vz_list()
 print vzlist
-#print(get_df_vz_infos(host, "102"))
 
 #for vz in vzlist:
 #    cpuinfo = get_cpu_info_vz(vz['id'])
