@@ -4,31 +4,30 @@ import os
 import subprocess
 import sys
 
-host = "eno-eh9-b2.mut-8.hosting.enovance.com"
-
 class Cmd(object):
-    def __init__(self):
-        pass
-    def exec_command_host(self, host, command):
-        process = subprocess.Popen("ssh %s '%s'" % (host, command), stdout=subprocess.PIPE, stderr=None, shell=True) 
+    def __init__(self, host):
+        self._host = host
+
+    def exec_command_host(self, command):
+        process = subprocess.Popen("ssh %s '%s'" % (self._host, command), stdout=subprocess.PIPE, stderr=None, shell=True) 
         output = process.communicate()
     
         return [ line for line in output[0].split("\n") if line != '' ]
 
-    def exec_command_on_vz(self, host, vz_id, command):
+    def exec_command_on_vz(self, vz_id, command):
     #	print "ssh %s \"vzctl exec %s \\\"%s\\\"\"" % (host, vz_id, command)
-        process = subprocess.Popen(r'ssh %s "vzctl exec %s \"%s\""' % (host, vz_id, command), stdout=subprocess.PIPE, stderr=None, shell=True)
+        process = subprocess.Popen(r'ssh %s "vzctl exec %s \"%s\""' % (self._host, vz_id, command), stdout=subprocess.PIPE, stderr=None, shell=True)
         output = process.communicate()
         return [ line for line in output[0].split("\n") if line != '' ]
 
 
 class Ehaelix(object):
     def __init__(self, host):
-        self._cmd = Cmd()
         self._host = host
+        self._cmd = Cmd(self._host)
 
     def get_vz_list(self):
-        vzlist_raw = self._cmd.exec_command_host(host, "vzlist -a -H -o ctid,hostname,status")
+        vzlist_raw = self._cmd.exec_command_host("vzlist -a -H -o ctid,hostname,status")
         vzlist = []
         for vz in vzlist_raw:
             vzinfo = vz.split()
@@ -37,7 +36,7 @@ class Ehaelix(object):
     			'id': vzinfo[0],
     			'hostname': vzinfo[1],
     			'status': vzinfo[2],
-    			'physical_host': host,
+    			'physical_host': self._host,
     			})
         return vzlist
     
@@ -137,7 +136,7 @@ class Ehaelix(object):
             })
         return result
 
-srv = Ehaelix(host)
+srv = Ehaelix('"eno-eh9-b2.mut-8.hosting.enovance.com"')
 
 vzlist = srv.get_vz_list()
 print vzlist
