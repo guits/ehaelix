@@ -5,6 +5,7 @@ Classe eHaelix
 
 import subprocess
 import re
+from jinja2 import Template, Environment, PackageLoader, FileSystemLoader
 
 
 class Cmd(object):
@@ -19,7 +20,7 @@ class Cmd(object):
         """
         Exec a command on a physical host
         """
-        process = subprocess.Popen("ssh %s '%s'" % (self._host, command),
+        process = subprocess.Popen(r'ssh %s "%s"' % (self._host, command),
                                    stdout=subprocess.PIPE,
                                    stderr=None, shell=True)
         output = process.communicate()
@@ -30,7 +31,6 @@ class Cmd(object):
         """
         Exec a command on a VZ
         """
-    #	print "ssh %s \"vzctl exec %s \\\"%s\\\"\"" % (host, vz_id, command)
         process = subprocess.Popen(r'ssh %s "vzctl exec %s \"%s\""' %
                                    (self._host, vz_id, command),
                                    stdout=subprocess.PIPE,
@@ -66,6 +66,21 @@ class Ehaelix(object):
                 'physical_host': self._host,
             })
         return vztab
+
+    def get_cpu_info(self):
+            """
+            Return CPU info of a physical machine
+            """
+            command = "grep 'cpu MHz' /proc/cpuinfo"
+            print command
+            cpus = self._cmd.exec_command_host(command)
+            cpu = cpus.pop().split()
+            result = {
+                'nb': len(cpus),
+                'mhz': cpu[3],
+                'unit': cpu[1],
+            }
+            return result
 
     def get_cpu_info_vz(self, vz_id):
         """
@@ -213,11 +228,18 @@ class Ehaelix(object):
 
 
 SRV = Ehaelix("eno-eh9-b2.mut-8.hosting.enovance.com")
+print SRV.get_cpu_info()
+#templateLoader = FileSystemLoader( searchpath="./" )
+#templateEnv = Environment( loader=templateLoader )
+#TEMPLATE_FILE = "./templates/report.rst"
+#template = templateEnv.get_template( TEMPLATE_FILE )
+#outputText = template.render()
 
-VZLIST = SRV.get_vz_list()
-for vz in VZLIST:
-    print vz['hostname']
-    vzapps = SRV.get_vz_list_apps(vz['id'])
-    print vzapps
-    for name, vzapp in vzapps.iteritems():
-        print "name: %s\t\tversion: %s" % (vzapp['name'], vzapp['version'])
+#
+#VZLIST = SRV.get_vz_list()
+#for vz in VZLIST:
+#    print vz['hostname']
+#    vzapps = SRV.get_vz_list_apps(vz['id'])
+#    print vzapps
+#    for name, vzapp in vzapps.iteritems():
+#        print "name: %s\t\tversion: %s" % (vzapp['name'], vzapp['version'])
