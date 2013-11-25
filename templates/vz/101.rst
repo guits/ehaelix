@@ -1,6 +1,7 @@
 .. _101:
 
-101
-----
-
-Info de mon vz !!!!
+{{ VZ.id }}
+------------
+  * Physical host : {{ VZ.physical_host }}
+  * Hostname : {{ VZ.hostname }}
+  * Status : {{ VZ.status }}
