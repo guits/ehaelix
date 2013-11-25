@@ -72,7 +72,7 @@ class Ehaelix(object):
             Return CPU info of a physical machine
             """
             command = "grep 'cpu MHz' /proc/cpuinfo"
-            print command
+            #print command
             cpus = self._cmd.exec_command_host(command)
             cpu = cpus.pop().split()
             result = {
@@ -227,8 +227,8 @@ class Ehaelix(object):
         return result
 
 
-SRV = Ehaelix("eno-eh9-b2.mut-8.hosting.enovance.com")
-print SRV.get_cpu_info()
+#SRV = Ehaelix("eno-eh9-b2.mut-8.hosting.enovance.com")
+#print SRV.get_cpu_info()
 #templateLoader = FileSystemLoader( searchpath="./" )
 #templateEnv = Environment( loader=templateLoader )
 #TEMPLATE_FILE = "./templates/report.rst"

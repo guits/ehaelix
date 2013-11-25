@@ -1,13 +1,19 @@
 from jinja2 import Environment, FileSystemLoader
 import os
 
+from stats_ehaelix import Ehaelix
+
+
+SRV = Ehaelix("eno-eh9-b2.mut-8.hosting.enovance.com")
+print SRV.get_cpu_info()
+
+exit(1)
 
 TEMPLATE_DIR='./templates'
 DOCS_DIR='./docs'
 
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
-
 
 filename = 'vz/101.rst'
 template = env.get_template(filename)
