@@ -27,7 +27,7 @@ VZ = SRV.get_vz_list().pop()
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-filename = 'vz/101.rst'
+filename = 'vz/vz.rst'
 template = env.get_template(filename)
 
 #class Link(object):

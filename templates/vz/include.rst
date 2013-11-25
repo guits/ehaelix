@@ -4,4 +4,4 @@ ____
 
 test
 
-.. include:: /vz/101.rst
+.. include:: /vz/vz.rst
