@@ -1,4 +1,5 @@
 from jinja2 import Environment, FileSystemLoader
+from jinja2.exceptions import UndefinedError
 import argparse
 import os
 
@@ -16,19 +17,36 @@ PARSER.add_argument("-2", "--b2",
             help="Address of the second host (B2)", type=str)
 ARGS = PARSER.parse_args()
 
+env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
+
+def render(filename, context={}, dry_run=False):
+    template = env.get_template(filename)
+    try:
+        if dry_run:
+            print template.render(context)
+        else:
+            # Make needed directory
+            print '----- %s in %s' % (os.path.basename(filename) ,os.path.dirname(filename))
+            # Generate File
+            template.stream(context).dump( '%s/%s' % (DOCS_DIR, filename))
+    except UndefinedError as e:
+        print 'Generate template %s error var : %s' % (filename, e)
+
+# Render all files
+render('vz/vz.rst', dry_run=True)
+
 
 
 
 # Tests :
-SRV = Ehaelix(ARGS.b1)
-VZ = SRV.get_vz_list().pop()
+# SRV = Ehaelix(ARGS.b1)
+# VZ = SRV.get_vz_list().pop()
 
 
 
-env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-filename = 'vz/vz.rst'
-template = env.get_template(filename)
+#filename = 'vz/vz.rst'
+#template = env.get_template(filename)
 
 #class Link(object):
 #    href = None
@@ -41,10 +59,6 @@ template = env.get_template(filename)
 #link.caption = 'Link name'
 #navigation = [link]
 #context = {'a_variable': 'Un truc', 'navigation': navigation}
+#context = {'VZ': VZ}
 
-context = {'VZ': VZ}
-
-print '----- %s in %s' % (os.path.basename(filename) ,os.path.dirname(filename))
-print template.render(context)
-#template.stream(context).dump( '%s/%s' % (DOCS_DIR, filename))
 

@@ -3,8 +3,8 @@
    You can adapt this file completely to your liking, but it should at least
    contain the root `toctree` directive.
 
-Welcome to Rapport's documentation!
-===================================
+Rapport cluster ehaelix
+=========================
 
 Contents:
 
@@ -12,6 +12,10 @@ Contents:
    :maxdepth: 2
 
    all_vz.rst
+
+
+**Cluster 1** :
+
 
 
 Indices and tables
