@@ -1,3 +1,5 @@
+#!/usr/bin/env python
+
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import UndefinedError
 import argparse
