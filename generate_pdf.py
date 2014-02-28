@@ -21,7 +21,11 @@ ARGS = PARSER.parse_args()
 
 env = Environment(loader=FileSystemLoader(TEMPLATE_DIR))
 
-def render(filename, context={}, dry_run=False):
+def render(template, destfile=None, context={}, dry_run=False):
+    if destfile:
+        filename=destfile
+    else:
+        filename=template
     template = env.get_template(filename)
     try:
         if dry_run:
@@ -34,18 +38,14 @@ def render(filename, context={}, dry_run=False):
     except UndefinedError as e:
         print 'Generate template %s error var : %s' % (filename, e)
 
-# Render all files
-render('vz/vz.rst', dry_run=True)
-
-
-
-
 # Tests :
-# SRV = Ehaelix(ARGS.b1)
-# VZ = SRV.get_vz_list().pop()
-
-
-
+SRV = Ehaelix(ARGS.b1)
+VZs = SRV.get_vz_list()
+for vz in VZs:
+    vz['ram'] = SRV.get_total_mem_info_vz(vz['id'])
+    vz['cpu'] = SRV.get_cpu_info_vz(vz['id'])
+    # Render all files
+    render('vz/vz.rst', context={'VZ':vz}, dry_run=True)
 
 #filename = 'vz/vz.rst'
 #template = env.get_template(filename)
