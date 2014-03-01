@@ -174,7 +174,7 @@ class Ehaelix(object):
                 'size': lineinfo[1],
                 'used': lineinfo[2],
                 'available': lineinfo[3],
-                'use%': lineinfo[4],
+                'used_p': lineinfo[4],
                 'mount': lineinfo[5],
             })
         return result

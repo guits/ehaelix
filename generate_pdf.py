@@ -38,29 +38,13 @@ def render(template, destfile=None, context={}, dry_run=False):
     except UndefinedError as e:
         print 'Generate template %s error var : %s' % (filename, e)
 
-# Tests :
+# Render all VZ
 SRV = Ehaelix(ARGS.b1)
 VZs = SRV.get_vz_list()
 for vz in VZs:
     vz['ram'] = SRV.get_total_mem_info_vz(vz['id'])
     vz['cpu'] = SRV.get_cpu_info_vz(vz['id'])
-    # Render all files
+    vz['disks'] = SRV.get_df_vz_infos(vz['id'])
+    vz['apps'] = SRV.get_vz_list_apps(vz['id'])
     render('vz/vz.rst', context={'VZ':vz}, dry_run=True)
-
-#filename = 'vz/vz.rst'
-#template = env.get_template(filename)
-
-#class Link(object):
-#    href = None
-#    caption = None
-#    def __init__(self):
-#        pass
-#
-#link = Link()
-#link.href = 'Link'
-#link.caption = 'Link name'
-#navigation = [link]
-#context = {'a_variable': 'Un truc', 'navigation': navigation}
-#context = {'VZ': VZ}
-
 
