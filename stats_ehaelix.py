@@ -1,5 +1,5 @@
 """
-Classe eHaelix
+Class eHaelix
 """
 #!/usr/bin/python
 
