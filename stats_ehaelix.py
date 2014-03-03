@@ -96,6 +96,20 @@ class Ehaelix(object):
         }
         return result
 
+    def get_total_mem_info(self):
+        """
+        Return memory info of a physical machine
+        """
+        command = "grep 'MemTotal' /proc/meminfo"
+        infos = self._cmd.exec_command_host(command)
+        info = infos.pop().split()
+        result = {
+            'name': info[0],
+            'size': info[1],
+            'unit': info[2],
+        }
+        return result
+
     def get_total_mem_info_vz(self, vz_id):
         """
         Return memory info of a VZ
