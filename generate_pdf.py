@@ -61,5 +61,4 @@ PHYSICAL['vgs'] = SRV.get_vgs_infos()
 PHYSICAL['lvs'] = SRV.get_lvs_infos()
 PHYSICAL['mount'] = SRV.get_mount_infos()
 PHYSICAL['disks'] = SRV.get_df_infos()
-print PHYSICAL
 render('physical/physical.rst', context={'PHYSICAL':PHYSICAL}, dry_run=True)
