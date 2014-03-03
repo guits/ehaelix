@@ -1,7 +1,4 @@
-'''
-Generate pdf
-'''
-#!/usr/bin/env python
+#!/usr/bin/python
 
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import UndefinedError
@@ -48,7 +45,7 @@ def render(template, destfile=None, context={}, dry_run=False):
 # Render all VZ
 SRV = Ehaelix(ARGS.b1)
 VZS = SRV.get_vz_list()
-PHYSICAL = []
+PHYSICAL = {}
 for vz in VZS:
     vz['ram'] = SRV.get_total_mem_info_vz(vz['id'])
     vz['cpu'] = SRV.get_cpu_info_vz(vz['id'])
@@ -57,10 +54,12 @@ for vz in VZS:
     render('vz/vz.rst', context={'VZ':vz}, dry_run=True)
 
 # Render Physical host
+PHYSICAL['name'] = ARGS.b1
 PHYSICAL['cpu'] = SRV.get_cpu_info()
+PHYSICAL['ram'] = SRV.get_total_mem_info()
 PHYSICAL['vgs'] = SRV.get_vgs_infos()
 PHYSICAL['lvs'] = SRV.get_lvs_infos()
 PHYSICAL['mount'] = SRV.get_mount_infos()
 PHYSICAL['disks'] = SRV.get_df_infos()
-
+print PHYSICAL
 render('physical/physical.rst', context={'PHYSICAL':PHYSICAL}, dry_run=True)

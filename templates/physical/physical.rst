@@ -1,17 +1,11 @@
-.. _{{ PHYSICAL.id }}:
+.. _{{ PHYSICAL.name }}:
 
-{{ VZ.id }}
+{{ PHYSICAL.name }}
 ------------
-  * Physical host : {{ VZ.physical_host }}
-  * Hostname : {{ VZ.hostname }}
-  * Status : {{ VZ.status }}
-  * Total MEM : {{ VZ.ram.size }} {{ VZ.ram.unit }}
-  * Cpu info : {{ VZ.cpu.nb }} @ {{ VZ.cpu.mhz }} {{ VZ.cpu.unit }}
+  * Hostname : {{ PHYSICAL.name }}
+  * Cpu infos : {{ PHYSICAL.cpu.nb }} @ {{ PHYSICAL.cpu.mhz }} {{ PHYSICAL.cpu.unit }}
+  * Mem infos : {{ PHYSICAL.ram.size }} {{ PHYSICAL.ram.unit }}
   * Disk Space :
-    {% for disk in VZ.disks -%}
+    {% for disk in PHYSICAL.disks -%}
         {{ disk.device }} mounted on {{ disk.mount }} {{ disk.used }} / {{ disk.size }} {{ disk.use_p }}
-    {% endfor %}
-  * Apps :
-    {% for app,value in VZ.apps.iteritems() -%}
-        {{ value.name }} {{ value.version }}
     {% endfor %}
