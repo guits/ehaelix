@@ -28,7 +28,8 @@ for vz in VZS:
     vz['disks'] = SRV.get_df_vz_infos(vz['id'])
     vz['apps'] = SRV.get_vz_list_apps(vz['id'])
     INCLUDE['vzs'].append(vz['id'])
-    render('vz/vz.rst', context={'VZ':vz}, dry_run=True)
+    render(template='vz/vz.rst', destfile='vz/%s.rst' % vz['id'],
+           context={'VZ':vz}, dry_run=True)
 
 # Render Physical host
 PHYSICAL['name'] = ARGS.b1

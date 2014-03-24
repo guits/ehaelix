@@ -11,19 +11,18 @@ def render(template, destfile=None, context={}, template_dir='./templates',
     render function
     """
     env = Environment(loader=FileSystemLoader(template_dir))
-    if destfile:
-        filename = destfile
-    else:
-        filename = template
-    template = env.get_template(filename)
+    if not destfile:
+        destfile = template
+
+    template = env.get_template(template)
+    print '----- %s in %s' % (os.path.basename(destfile),
+                              os.path.dirname(destfile))
     try:
         if dry_run:
             print template.render(context)
         else:
-            # Make needed directory
-            print '----- %s in %s' % (os.path.basename(filename),
-                                      os.path.dirname(filename))
+            # TODO Make needed directory
             # Generate File
-            template.stream(context).dump( '%s/%s' % (docs_dir, filename))
+            template.stream(context).dump( '%s/%s' % (docs_dir, destfile))
     except UndefinedError as error:
-        print 'Generate template %s error var : %s' % (filename, error)
+        print 'Generate template %s error var : %s' % (destfile, error)
