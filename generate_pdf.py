@@ -46,11 +46,14 @@ def render(template, destfile=None, context={}, dry_run=False):
 SRV = Ehaelix(ARGS.b1)
 VZS = SRV.get_vz_list()
 PHYSICAL = {}
+INCLUDE = {}
+INCLUDE['vzs'] = []
 for vz in VZS:
     vz['ram'] = SRV.get_total_mem_info_vz(vz['id'])
     vz['cpu'] = SRV.get_cpu_info_vz(vz['id'])
     vz['disks'] = SRV.get_df_vz_infos(vz['id'])
     vz['apps'] = SRV.get_vz_list_apps(vz['id'])
+    INCLUDE['vzs'].append(vz['id'])
     render('vz/vz.rst', context={'VZ':vz}, dry_run=True)
 
 # Render Physical host
@@ -61,4 +64,9 @@ PHYSICAL['vgs'] = SRV.get_vgs_infos()
 PHYSICAL['lvs'] = SRV.get_lvs_infos()
 PHYSICAL['mount'] = SRV.get_mount_infos()
 PHYSICAL['disks'] = SRV.get_df_infos()
+INCLUDE['socle'] = []
+INCLUDE['socle'].append(PHYSICAL['name'])
 render('physical/physical.rst', context={'PHYSICAL':PHYSICAL}, dry_run=True)
+
+# Render 'index' page
+render('index/index.rst', context={'INCLUDE':INCLUDE}, dry_run=True)
