@@ -11,11 +11,13 @@ Contents:
 .. toctree::
    :maxdepth: 2
 
-   socle.rst
-   all_vz.rst
+{% for cluster, info in INFOS.iteritems() -%}
+    physical/{{ info.socle.name }}.rst
+{% for vz in info.vzs -%}
+    vz/{{ vz.id }}.rst
+{% endfor %}
+{% endfor %}
 
-
-**Cluster 1** :
 
 
 

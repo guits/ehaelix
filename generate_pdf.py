@@ -14,34 +14,60 @@ PARSER.add_argument("-1", "--b1",
             help="Address of the host (B1)", type=str, required=True)
 PARSER.add_argument("-2", "--b2",
             help="Address of the second host (B2)", type=str)
+PARSER.add_argument("-d", "--dry-run",
+            help="Dry-run mode", action='store_true', default=False)
 ARGS = PARSER.parse_args()
 
-# Render all VZ
-SRV = Ehaelix(ARGS.b1)
-VZS = SRV.get_vz_list()
-PHYSICAL = {}
-INCLUDE = {}
-INCLUDE['vzs'] = []
-for vz in VZS:
-    vz['ram'] = SRV.get_total_mem_info_vz(vz['id'])
-    vz['cpu'] = SRV.get_cpu_info_vz(vz['id'])
-    vz['disks'] = SRV.get_df_vz_infos(vz['id'])
-    vz['apps'] = SRV.get_vz_list_apps(vz['id'])
-    INCLUDE['vzs'].append(vz['id'])
-    render(template='vz/vz.rst', destfile='vz/%s.rst' % vz['id'],
-           context={'VZ':vz}, dry_run=True)
+def get_all_infos(socle):
+    # Render all VZ
+    infos={}
 
-# Render Physical host
-PHYSICAL['name'] = ARGS.b1
-PHYSICAL['cpu'] = SRV.get_cpu_info()
-PHYSICAL['ram'] = SRV.get_total_mem_info()
-PHYSICAL['vgs'] = SRV.get_vgs_infos()
-PHYSICAL['lvs'] = SRV.get_lvs_infos()
-PHYSICAL['mount'] = SRV.get_mount_infos()
-PHYSICAL['disks'] = SRV.get_df_infos()
-INCLUDE['socle'] = []
-INCLUDE['socle'].append(PHYSICAL['name'])
-render('physical/physical.rst', context={'PHYSICAL':PHYSICAL}, dry_run=True)
+    srv = Ehaelix(socle)
+    vzs = srv.get_vz_list()
+    infos['vzs'] = []
+    for vz in vzs:
+        vz['ram'] = srv.get_total_mem_info_vz(vz['id'])
+        vz['cpu'] = srv.get_cpu_info_vz(vz['id'])
+        vz['disks'] = srv.get_df_vz_infos(vz['id'])
+        vz['apps'] = srv.get_vz_list_apps(vz['id'])
+        infos['vzs'].append(vz)
+    
+    # Render Physical host
+    physical = {
+        'name':  socle,
+        'cpu':   srv.get_cpu_info(),
+        'ram':   srv.get_total_mem_info(),
+        'vgs':   srv.get_vgs_infos(),
+        'lvs':   srv.get_lvs_infos(),
+        'mount': srv.get_mount_infos(),
+        'disks': srv.get_df_infos(),
+    }
+
+    infos['socle'] = physical
+    return infos
+
+INFOS={}
+
+# Get all infos for b1
+INFOS[ARGS.b1] = get_all_infos(ARGS.b1)
+if ARGS.b2:
+    INFOS[ARGS.b2] = get_all_infos(ARGS.b2)
+
+# Render all
+for cluster, info in INFOS.iteritems():
+    # Render socle
+    render(template='physical/physical.rst', dest_file='physical/%s.rst' % cluster,
+           context={'PHYSICAL': info['socle']}, dry_run=ARGS.dry_run)
+    # Render vz
+    for vz in info['vzs']:
+        render(template='vz/vz.rst', dest_file='vz/%s.rst' % vz['id'],
+               context={'VZ':vz}, dry_run=ARGS.dry_run)
 
 # Render 'index' page
-render('index/index.rst', context={'INCLUDE':INCLUDE}, dry_run=True)
+render('index.rst', context={'INFOS': INFOS}, dry_run=ARGS.dry_run)
+
+
+
+
+
+
