@@ -173,6 +173,20 @@ class Ehaelix(object):
             })
         return result
 
+    def get_os_version(self):
+        """
+        Return Operating system version (little debian friendly)
+        """
+        lines_raw = self._cmd.exec_command_host('cat /etc/issue.net')
+        return lines_raw.pop().rstrip('\n')
+
+    def get_vz_os_version(self, vz_id):
+        """
+        Return Operating system version (little debian friendly)
+        """
+        lines_raw = self._cmd.exec_command_on_vz(vz_id, 'cat /etc/issue.net')
+        return lines_raw.pop().rstrip('\n')
+
     def get_df_infos(self):
         """
         Return space disk information on a physical host
