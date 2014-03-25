@@ -9,14 +9,13 @@ Rapport cluster ehaelix
 Contents:
 
 .. toctree::
-   :maxdepth: 2
-
-{% for cluster, info in INFOS.iteritems() -%}
+    :maxdepth: 2
+{% for cluster, info in INFOS.iteritems() %}
     physical/{{ info.socle.name }}.rst
-{% for vz in info.vzs -%}
+{%- for vz in info.vzs %}
     vz/{{ vz.id }}.rst
-{% endfor %}
-{% endfor %}
+{%- endfor %}
+{%- endfor %}
 
 
 
