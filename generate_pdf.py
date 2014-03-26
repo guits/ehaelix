@@ -35,14 +35,16 @@ def get_all_infos(socle):
     
     # Render Physical host
     physical = {
-        'name':  socle,
-        'os':    srv.get_os_version(),
-        'cpu':   srv.get_cpu_info(),
-        'ram':   srv.get_total_mem_info(),
-        'vgs':   srv.get_vgs_infos(),
-        'lvs':   srv.get_lvs_infos(),
-        'mount': srv.get_mount_infos(),
-        'disks': srv.get_df_infos(),
+        'name':      socle,
+        'hardware' : srv.get_hw_model(),
+        'os':        srv.get_os_version(),
+        'kernel':    srv.get_kernel_version(),
+        'cpu':       srv.get_cpu_info(),
+        'ram':       srv.get_total_mem_info(),
+        'vgs':       srv.get_vgs_infos(),
+        'lvs':       srv.get_lvs_infos(),
+        'mount':     srv.get_mount_infos(),
+        'disks':     srv.get_df_infos(),
     }
 
     infos['socle'] = physical
@@ -59,7 +61,7 @@ if ARGS.b2:
 for cluster, info in INFOS.iteritems():
     # Render socle
     render(template='physical/physical.rst', dest_file='physical/%s.rst' % cluster,
-           context={'PHYSICAL': info['socle']}, dry_run=ARGS.dry_run)
+           context={'PHYSICAL': info['socle'], 'VZS': info['vzs']}, dry_run=ARGS.dry_run)
     # Render vz
     for vz in info['vzs']:
         render(template='vz/vz.rst', dest_file='vz/%s.rst' % vz['id'],

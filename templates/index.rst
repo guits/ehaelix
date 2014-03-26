@@ -19,6 +19,15 @@ Contents:
 
 
 
+Liste des environnements dans le cluster
+==========================================
+
+{% for cluster, info in INFOS.iteritems() %}
+    * **{{ info.socle.name }}**
+{%- for vz in info.vzs %}
+        * {{ vz.hostname }}
+{%- endfor %}
+{%- endfor %}
 
 Indices and tables
 ==================

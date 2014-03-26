@@ -173,6 +173,27 @@ class Ehaelix(object):
             })
         return result
 
+    def get_hw_model(self):
+        """
+        Return hw model
+        """
+        lines_raw = self._cmd.exec_command_host('dmidecode -s system-manufacturer'
+                                           ' && dmidecode -s system-product-name')
+
+        # One result by line so get therse lines content
+        result = {
+            'manufacturer': lines_raw[0].rstrip('\n'),
+            'product': lines_raw[1].rstrip('\n'),
+        }
+        return result
+
+    def get_kernel_version(self):
+        """
+        Return kernel version
+        """
+        lines_raw = self._cmd.exec_command_host('uname -r')
+        return lines_raw.pop().rstrip('\n')
+
     def get_os_version(self):
         """
         Return Operating system version (little debian friendly)

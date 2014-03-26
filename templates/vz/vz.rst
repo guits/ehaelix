@@ -1,7 +1,8 @@
 .. _{{ VZ.id }}:
 
-{{ VZ.id }}
-------------
+Detail vz {{ VZ.id }}
+===============================
+
   * **Physical host** : {{ VZ.physical_host }}
   * **Hostname** : {{ VZ.hostname }}
   * **OS version** : {{ VZ.os }}
