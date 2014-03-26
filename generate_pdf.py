@@ -4,7 +4,7 @@ from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import UndefinedError
 import argparse
 import os
-from tools import render
+from tools import *
 
 from stats_ehaelix import Ehaelix
 
@@ -51,13 +51,27 @@ def get_all_infos(socle):
     return infos
 
 INFOS={}
-
 # Get all infos for b1
 INFOS[ARGS.b1] = get_all_infos(ARGS.b1)
 if ARGS.b2:
     INFOS[ARGS.b2] = get_all_infos(ARGS.b2)
 
-# Render all
+# Debug print infos
+print INFOS[ARGS.b1]
+
+# Gen all charts
+for cluster, info in INFOS.iteritems():
+    gen_cpus_chart(info=info,
+                   dest_file='physical/cpus_%s.svg' % cluster,
+                   dry_run=ARGS.dry_run)
+    gen_cpus_stacked_chart(info=info,
+                   dest_file='physical/cpus_stacked_%s.svg' % cluster,
+                   dry_run=ARGS.dry_run)
+    gen_disks_chart(info=info,
+                   dest_file='physical/disks_%s.svg' % cluster,
+                   dry_run=ARGS.dry_run)
+
+# Render all pages
 for cluster, info in INFOS.iteritems():
     # Render socle
     render(template='physical/physical.rst', dest_file='physical/%s.rst' % cluster,
@@ -69,9 +83,4 @@ for cluster, info in INFOS.iteritems():
 
 # Render 'index' page
 render('index.rst', context={'INFOS': INFOS}, dry_run=ARGS.dry_run)
-
-
-
-
-
 

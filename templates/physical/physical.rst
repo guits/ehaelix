@@ -26,7 +26,7 @@ Detail socle {{ PHYSICAL.name }}
       {%- endfor %}
   * **Environnements** :
       {%- for vz in VZS %}
-          * {{ vz.hostname }}
+          * {{ vz.id }} : {{ vz.hostname }}
               * cpu : {{ vz.cpu.nb }} x {{ vz.cpu.mhz }} {{ vz.cpu.unit }}
               * ram : {{ vz.ram.size }} {{ vz.ram.unit }}
                 {# 0 because the first if / #}

@@ -29,6 +29,35 @@ Liste des environnements dans le cluster
 {%- endfor %}
 {%- endfor %}
 
+
+Charts
+========
+
+Cpu
+----
+
+{% for cluster, info in INFOS.iteritems() %}
+.. image:: physical/cpus_{{ info.socle.name }}.svg
+    :width: 800px
+    :height: 500px
+{% endfor %}
+
+{% for cluster, info in INFOS.iteritems() %}
+.. image:: physical/cpus_stacked_{{ info.socle.name }}.svg
+    :width: 800px
+    :height: 500px
+{% endfor %}
+
+Disk
+-----
+
+{% for cluster, info in INFOS.iteritems() %}
+.. image:: physical/disks_{{ info.socle.name }}.svg
+    :width: 800px
+    :height: 500px
+{% endfor %}
+
+
 Indices and tables
 ==================
 

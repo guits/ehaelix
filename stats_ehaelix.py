@@ -128,7 +128,7 @@ class Ehaelix(object):
         """
         Return informations about VGs on a physical host
         """
-        lines_raw = self._cmd.exec_command_host("vgs")
+        lines_raw = self._cmd.exec_command_host("vgs --units G")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
@@ -145,7 +145,7 @@ class Ehaelix(object):
         """
         Return informations about LVs on a physicial host
         """
-        lines_raw = self._cmd.exec_command_host("lvs")
+        lines_raw = self._cmd.exec_command_host("lvs --units G")
         # delete first line
         lines_raw = lines_raw[1:]
         result = []
