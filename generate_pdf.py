@@ -35,16 +35,18 @@ def get_all_infos(socle):
     
     # Render Physical host
     physical = {
-        'name':      socle,
-        'hardware' : srv.get_hw_model(),
-        'os':        srv.get_os_version(),
-        'kernel':    srv.get_kernel_version(),
-        'cpu':       srv.get_cpu_info(),
-        'ram':       srv.get_total_mem_info(),
-        'vgs':       srv.get_vgs_infos(),
-        'lvs':       srv.get_lvs_infos(),
-        'mount':     srv.get_mount_infos(),
-        'disks':     srv.get_df_infos(),
+        'name':           socle,
+        'filtered_name':  filter_name(socle),
+        'hardware' :      srv.get_hw_model(),
+        'os':             srv.get_os_version(),
+        'drbd_overview':  srv.get_drbd_overview(),
+        'kernel':         srv.get_kernel_version(),
+        'cpu':            srv.get_cpu_info(),
+        'ram':            srv.get_total_mem_info(),
+        'vgs':            srv.get_vgs_infos(),
+        'lvs':            srv.get_lvs_infos(),
+        'mount':          srv.get_mount_infos(),
+        'disks':          srv.get_df_infos(),
     }
 
     infos['socle'] = physical
@@ -62,13 +64,20 @@ print INFOS[ARGS.b1]
 # Gen all charts
 for cluster, info in INFOS.iteritems():
     gen_cpus_chart(info=info,
-                   dest_file='physical/cpus_%s.svg' % cluster,
+                   dest_file='physical/cpus_%s.svg' % info['socle']['filtered_name'],
+                   #dest_file='physical/cpus_%s.svg' % info['socle']['filtered_name'],
                    dry_run=ARGS.dry_run)
     gen_cpus_stacked_chart(info=info,
-                   dest_file='physical/cpus_stacked_%s.svg' % cluster,
+                   dest_file='physical/cpus_stacked_%s.svg' % info['socle']['filtered_name'],
                    dry_run=ARGS.dry_run)
     gen_disks_chart(info=info,
-                   dest_file='physical/disks_%s.svg' % cluster,
+                   dest_file='physical/disks_%s.svg' % info['socle']['filtered_name'],
+                   dry_run=ARGS.dry_run)
+    gen_disks_stacked_chart(info=info,
+                   dest_file='physical/disks_stacked_%s.svg' % info['socle']['filtered_name'],
+                   dry_run=ARGS.dry_run)
+    gen_mem_stacked_chart(info=info,
+                   dest_file='physical/mem_stacked_%s.svg' % info['socle']['filtered_name'],
                    dry_run=ARGS.dry_run)
 
 # Render all pages

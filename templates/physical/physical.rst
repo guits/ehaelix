@@ -9,17 +9,16 @@ Detail socle {{ PHYSICAL.name }}
   * **Cpu** : {{ PHYSICAL.cpu.nb }} X {{ PHYSICAL.cpu.mhz }} {{ PHYSICAL.cpu.unit }}
   * **Memory** : {{ PHYSICAL.ram.size }} {{ PHYSICAL.ram.unit }}
   * **OS version** : {{ PHYSICAL.os }}
-  * **Drbd** :
-      * VGs:
-      {%- for vg in PHYSICAL.vgs %}
-          * {{ vg.name }} - free: {{ vg.free }} / {{ vg.size }}
-          * LVs:
-          {%- for lv in PHYSICAL.lvs %}
-          {%- if lv.vg == vg.name %}
-              * {{ lv.name }} size: {{ lv.size }}
-          {%- endif %}
-          {%- endfor %}
+  * **VGs**:
+  {%- for vg in PHYSICAL.vgs %}
+      * {{ vg.name }} - free: {{ vg.free }} / {{ vg.size }}
+      * LVs:
+      {%- for lv in PHYSICAL.lvs %}
+      {%- if lv.vg == vg.name %}
+          * {{ lv.name }} size: {{ lv.size }}
+      {%- endif %}
       {%- endfor %}
+  {%- endfor %}
   * **Disk Space** :
       {%- for disk in PHYSICAL.disks %}
           * {{ disk.device }} mounted on {{ disk.mount }} {{ disk.used }} / {{ disk.size }} {{ disk.use_p }}
@@ -29,7 +28,7 @@ Detail socle {{ PHYSICAL.name }}
           * {{ vz.id }} : {{ vz.hostname }}
               * cpu : {{ vz.cpu.nb }} x {{ vz.cpu.mhz }} {{ vz.cpu.unit }}
               * ram : {{ vz.ram.size }} {{ vz.ram.unit }}
-                {# 0 because the first if / #}
+                {#- 0 because the first if / #}
               * disk : {{ vz.disks[0].size }}
       {%- endfor %}
 

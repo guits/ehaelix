@@ -12,9 +12,8 @@ class Cmd(object):
     """
     Class for execute via ssh a command
     """
-    def __init__(self, host, apps_filter="mysql"):
+    def __init__(self, host):
         self._host = host
-        self._apps_filter = apps_filter
 
     def exec_command_host(self, command):
         """
@@ -47,6 +46,35 @@ class Ehaelix(object):
     def __init__(self, host):
         self._host = host
         self._cmd = Cmd(self._host)
+
+    def get_drbd_overview(self):
+        """
+        Return get drbd-overview infos
+        """
+        drbd_overview = {}
+        fields_name = [
+            'id_name',
+            'connection_state',
+            'role',
+            'disk_states',
+            'replication_protocol',
+            'io_flags',
+            'mount_point',
+            'filesystem',
+            'size',
+            'free',
+            'used',
+            'percent',
+        ]
+        for line in self._cmd.exec_command_host('drbd-overview'):
+        #251:drbd251  Connected Primary/Secondary UpToDate/UpToDate C r----- /home/vz/up/puppetmaster-os  xfs  10G  3.2G 6.9G 32%
+            _drbd_line = {}
+            for index, field in enumerate(line.split()):
+                _drbd_line[fields_name[index]] = field
+            # Get only name
+            drbd_name = _drbd_line['id_name'].split(':')[1]
+            drbd_overview[drbd_name] = _drbd_line
+        return drbd_overview
 
     def get_vz_list(self):
         """

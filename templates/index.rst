@@ -37,13 +37,13 @@ Cpu
 ----
 
 {% for cluster, info in INFOS.iteritems() %}
-.. image:: physical/cpus_{{ info.socle.name }}.svg
+.. image:: physical/cpus_{{ info.socle.filtered_name }}.*
     :width: 800px
     :height: 500px
 {% endfor %}
 
 {% for cluster, info in INFOS.iteritems() %}
-.. image:: physical/cpus_stacked_{{ info.socle.name }}.svg
+.. image:: physical/cpus_stacked_{{ info.socle.filtered_name }}.*
     :width: 800px
     :height: 500px
 {% endfor %}
@@ -52,7 +52,22 @@ Disk
 -----
 
 {% for cluster, info in INFOS.iteritems() %}
-.. image:: physical/disks_{{ info.socle.name }}.svg
+.. image:: physical/disks_{{ info.socle.filtered_name }}.*
+    :width: 800px
+    :height: 500px
+{% endfor %}
+
+{% for cluster, info in INFOS.iteritems() %}
+.. image:: physical/disks_stacked_{{ info.socle.filtered_name }}.*
+    :width: 800px
+    :height: 500px
+{% endfor %}
+
+Memory
+-----
+
+{% for cluster, info in INFOS.iteritems() %}
+.. image:: physical/mem_stacked_{{ info.socle.filtered_name }}.*
     :width: 800px
     :height: 500px
 {% endfor %}

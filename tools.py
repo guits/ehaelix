@@ -71,18 +71,77 @@ def gen_disks_chart(info, dest_file, docs_dir='./docs', dry_run=False):
     chart = pygal.Pie()
     chart.title = 'Disk space Assignement on %s' % info['socle']['name']
     # Get only the first vs
-    vg = info['socle']['vgs'].pop()
+    vg = info['socle']['vgs'][0]
     # Remove the forced G unit in lvs and vgs
     chart.add('Free', float(re.sub(r'G$', r'', vg['free'])))
     for lv in info['socle']['lvs']:
         if lv['vg'] == vg['name']:
-            chart.add(lv['name'], float(re.sub(r'G$', r'', lv['size'])))
+            # get vz name by drbd mount_point
+            # Print only mounted (primary drbd)
+            drbd_mount_point = get_mounted_dir_for_device(info, lv['name'])
+            if drbd_mount_point:
+                chart.add(drbd_mount_point, float(re.sub(r'G$', r'', lv['size'])))
+    chart.render_to_file(final_dest_file)
+
+def gen_disks_stacked_chart(info, dest_file, docs_dir='./docs', dry_run=False):
+    final_dest_file = join(docs_dir, dest_file)
+    if dry_run:
+        print 'Generate graph StackedBar in %s' % final_dest_file
+        return
+    # Gen chart
+    chart = pygal.StackedBar()
+    chart.title = 'Disk space Assignement on %s (in G)' % info['socle']['name']
+    chart.x_labels = ['Total','partitions']
+    # Get only the first vs
+    vg = info['socle']['vgs'][0]
+    # Remove the forced G unit in lvs and vgs
+    free_size = remove_exponent(vg['free'])
+    chart.add('Free', [free_size, free_size])
+    chart.add('Used', [remove_exponent(vg['size']) - free_size, None])
+    other_size = 0
+    for lv in info['socle']['lvs']:
+        if lv['vg'] == vg['name']:
+            # get vz name by drbd mount_point
+            # Print only mounted (primary drbd)
+            drbd_mount_point = get_mounted_dir_for_device(info, lv['name'])
+            if drbd_mount_point:
+                chart.add(drbd_mount_point, [None, remove_exponent(lv['size'])])
+            else:
+                other_size += remove_exponent(lv['size'])
+
+    # Add size of unmounted devices
+    chart.add('Other', [None, other_size])
+
+    chart.render_to_file(final_dest_file)
+
+
+def gen_mem_stacked_chart(info, dest_file, docs_dir='./docs', dry_run=False):
+    final_dest_file = join(docs_dir, dest_file)
+    if dry_run:
+        print 'Generate graph StackedBar in %s' % final_dest_file
+        return
+    # Gen chart
+    chart = pygal.StackedBar()
+    chart.title = 'Mem Assignement on %s in G' % info['socle']['name']
+    chart.x_labels = ['socle','vzs']
+    chart.add(info['socle']['name'],
+              [int(info['socle']['ram']['size'])/1024/1024, None])
+    for vz in info['vzs']:
+        chart.add(vz['hostname'],
+                  [None, int(vz['ram']['size'])/1024/1024])
     chart.render_to_file(final_dest_file)
 
 
 def get_mounted_dir_for_device(info, device):
-    for disk in info['socle']['disks']:
-        if disk['device'] == device:
-            return basename(disk['mount'])
-    return 'None'
+    device = re.sub('^lv_', '', device)
+    drbd_device = info['socle']['drbd_overview'].get(device, {})
+    return basename(drbd_device.get('mount_point', ''))
 
+
+def remove_exponent(value, exponent='G'):
+    "Remove exponent and return float"
+    return float(re.sub(r'%s$' % exponent, r'', value))
+
+def filter_name(name):
+    "Return filter name without special chars for latex image name"
+    return re.sub(r'[^a-zA-Z0-9]', '_', name)
