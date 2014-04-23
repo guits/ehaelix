@@ -58,9 +58,6 @@ INFOS[ARGS.b1] = get_all_infos(ARGS.b1)
 if ARGS.b2:
     INFOS[ARGS.b2] = get_all_infos(ARGS.b2)
 
-# Debug print infos
-print INFOS[ARGS.b1]
-
 # Gen all charts
 for cluster, info in INFOS.iteritems():
     gen_cpus_chart(info=info,

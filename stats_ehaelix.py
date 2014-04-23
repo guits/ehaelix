@@ -276,12 +276,16 @@ class Ehaelix(object):
             })
         return result
 
-    def get_vz_list_apps(self, vz_id, apps=["apache2", "tomcat[0-9]",
-                                            "postgres",
-                                            "mysql-server",
-                                            r"mariadb-server-[0-9]\.[0-9]",
-                                            "nginx", "varnish", "mongodb",
-                                            "php5-fpm", "php5"]):
+    def get_vz_list_apps(self, vz_id, apps=[
+                                "apache2-mpm-.*",
+                                "nginx",
+                                "tomcat[0-9]",
+                                "varnish",
+                                "postgresql-[0-9]\.[0-9]",
+                                "mysql-server",
+                                r"mariadb-server-[0-9]\.[0-9]",
+                                "mongodb",
+                                "php5-fpm", "php5", "zend-server-.*-php.*"]):
         """
         Return an array of apps listed in 'apps' arg,
         with status and version number

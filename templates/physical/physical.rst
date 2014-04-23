@@ -11,8 +11,8 @@ Detail socle {{ PHYSICAL.name }}
   * **OS version** : {{ PHYSICAL.os }}
   * **VGs**:
   {%- for vg in PHYSICAL.vgs %}
-      * {{ vg.name }} - free: {{ vg.free }} / {{ vg.size }}
-      * LVs:
+      * **{{ vg.name }}** - free: {{ vg.free }} / {{ vg.size }}
+      * **LVs**:
       {%- for lv in PHYSICAL.lvs %}
       {%- if lv.vg == vg.name %}
           * {{ lv.name }} size: {{ lv.size }}
