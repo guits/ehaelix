@@ -5,8 +5,18 @@ from jinja2.exceptions import UndefinedError
 import argparse
 import os
 from tools import *
+import logging
 
 from stats_ehaelix import Ehaelix
+
+# Init logging level with debug stream handler
+LOG = logging.getLogger()
+LOG.setLevel(logging.INFO)
+
+# Set logger formater
+logformat =  '%(asctime)s %(levelname)s -: %(message)s'
+formatter = logging.Formatter(logformat)
+hdl = logging.StreamHandler(); hdl.setFormatter(formatter); LOG.addHandler(hdl)
 
 # Get args
 PARSER = argparse.ArgumentParser()
@@ -80,10 +90,12 @@ for cluster, info in INFOS.iteritems():
 # Render all pages
 for cluster, info in INFOS.iteritems():
     # Render socle
+    LOG.info('Render cluster : %s' % cluster)
     render(template='physical/physical.rst', dest_file='physical/%s.rst' % cluster,
            context={'PHYSICAL': info['socle'], 'VZS': info['vzs']}, dry_run=ARGS.dry_run)
     # Render vz
     for vz in info['vzs']:
+        LOG.info('  * Render vz : %s' % vz['hostname'])
         render(template='vz/vz.rst', dest_file='vz/%s.rst' % vz['id'],
                context={'VZ':vz}, dry_run=ARGS.dry_run)
 

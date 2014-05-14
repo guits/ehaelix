@@ -8,6 +8,9 @@ from os.path import join, basename
 import pygal
 
 
+def ensure_float(str_number):
+    return float(str_number.replace(',','.'))
+
 def render(template, dest_file=None, context={}, template_dir='./templates',
            docs_dir='./docs', dry_run=False):
     """
@@ -73,14 +76,14 @@ def gen_disks_chart(info, dest_file, docs_dir='./docs', dry_run=False):
     # Get only the first vs
     vg = info['socle']['vgs'][0]
     # Remove the forced G unit in lvs and vgs
-    chart.add('Free', float(re.sub(r'G$', r'', vg['free'])))
+    chart.add('Free', ensure_float(re.sub(r'G$', r'', vg['free'])))
     for lv in info['socle']['lvs']:
         if lv['vg'] == vg['name']:
             # get vz name by drbd mount_point
             # Print only mounted (primary drbd)
             drbd_mount_point = get_mounted_dir_for_device(info, lv['name'])
             if drbd_mount_point:
-                chart.add(drbd_mount_point, float(re.sub(r'G$', r'', lv['size'])))
+                chart.add(drbd_mount_point, ensure_float(re.sub(r'G$', r'', lv['size'])))
     chart.render_to_file(final_dest_file)
 
 def gen_disks_stacked_chart(info, dest_file, docs_dir='./docs', dry_run=False):
@@ -140,7 +143,7 @@ def get_mounted_dir_for_device(info, device):
 
 def remove_exponent(value, exponent='G'):
     "Remove exponent and return float"
-    return float(re.sub(r'%s$' % exponent, r'', value))
+    return ensure_float(re.sub(r'%s$' % exponent, r'', value))
 
 def filter_name(name):
     "Return filter name without special chars for latex image name"
