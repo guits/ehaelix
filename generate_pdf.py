@@ -36,12 +36,13 @@ def get_all_infos(socle):
     vzs = srv.get_vz_list()
     infos['vzs'] = []
     for vz in vzs:
-        vz['ram'] = srv.get_total_mem_info_vz(vz['id'])
-        vz['os'] = srv.get_vz_os_version(vz['id'])
-        vz['cpu'] = srv.get_cpu_info_vz(vz['id'])
-        vz['disks'] = srv.get_df_vz_infos(vz['id'])
-        vz['apps'] = srv.get_vz_list_apps(vz['id'])
-        infos['vzs'].append(vz)
+        if vz['status'] == 'running':
+            vz['ram'] = srv.get_total_mem_info_vz(vz['id'])
+            vz['os'] = srv.get_vz_os_version(vz['id'])
+            vz['cpu'] = srv.get_cpu_info_vz(vz['id'])
+            vz['disks'] = srv.get_df_vz_infos(vz['id'])
+            vz['apps'] = srv.get_vz_list_apps(vz['id'])
+            infos['vzs'].append(vz)
     
     # Render Physical host
     physical = {
