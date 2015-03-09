@@ -104,7 +104,7 @@ class Ehaelix(object):
             cpus = self._cmd.exec_command_host(command)
             cpu = cpus.pop().split()
             result = {
-                'nb': len(cpus),
+                'nb': len(cpus) + 1,
                 'mhz': cpu[3],
                 'unit': cpu[1],
             }
@@ -118,7 +118,7 @@ class Ehaelix(object):
         cpus = self._cmd.exec_command_on_vz(vz_id, command)
         cpu = cpus.pop().split()
         result = {
-            'nb': len(cpus),
+            'nb': len(cpus) + 1,
             'mhz': cpu[3],
             'unit': cpu[1],
         }

@@ -43,6 +43,8 @@ def gen_cpus_chart(info, dest_file, docs_dir='./docs', dry_run=False):
     if dry_run:
         print 'Generate graph HorizontalBar in %s' % final_dest_file
         return
+    if not os.path.isdir(os.path.dirname(final_dest_file)):
+        os.makedirs(os.path.dirname(final_dest_file))
     # Gen chart
     chart = pygal.HorizontalBar()
     chart.title = 'Cpus Assignement on %s' % info['socle']['name']
