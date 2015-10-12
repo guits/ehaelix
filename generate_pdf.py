@@ -3,7 +3,6 @@
 from jinja2 import Environment, FileSystemLoader
 from jinja2.exceptions import UndefinedError
 import argparse
-import os
 from tools import *
 import logging
 
@@ -14,7 +13,7 @@ LOG = logging.getLogger()
 LOG.setLevel(logging.INFO)
 
 # Set logger formater
-logformat =  '%(asctime)s %(levelname)s -: %(message)s'
+logformat = '%(asctime)s %(levelname)s -: %(message)s'
 formatter = logging.Formatter(logformat)
 hdl = logging.StreamHandler(); hdl.setFormatter(formatter); LOG.addHandler(hdl)
 
@@ -30,7 +29,7 @@ ARGS = PARSER.parse_args()
 
 def get_all_infos(socle):
     # Render all VZ
-    infos={}
+    infos = {}
 
     srv = Ehaelix(socle)
     vzs = srv.get_vz_list()
@@ -48,7 +47,7 @@ def get_all_infos(socle):
     physical = {
         'name':           socle,
         'filtered_name':  filter_name(socle),
-        'hardware' :      srv.get_hw_model(),
+        'hardware':      srv.get_hw_model(),
         'os':             srv.get_os_version(),
         'drbd_overview':  srv.get_drbd_overview(),
         'kernel':         srv.get_kernel_version(),
@@ -63,7 +62,7 @@ def get_all_infos(socle):
     infos['socle'] = physical
     return infos
 
-INFOS={}
+INFOS = {}
 # Get all infos for b1
 INFOS[ARGS.b1] = get_all_infos(ARGS.b1)
 if ARGS.b2:
