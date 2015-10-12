@@ -67,7 +67,6 @@ class Ehaelix(object):
             'percent',
         ]
         for line in self._cmd.exec_command_host('drbd-overview'):
-        #251:drbd251  Connected Primary/Secondary UpToDate/UpToDate C r----- /home/vz/up/puppetmaster-os  xfs  10G  3.2G 6.9G 32%
             _drbd_line = {}
             for index, field in enumerate(line.split()):
                 _drbd_line[fields_name[index]] = field
