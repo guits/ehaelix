@@ -19,6 +19,7 @@ SOURCEDIR     = .
 IMAGEDIRS      = physical
 
 # SVG to PDF conversion
+#SVG2PDF       = /Applications/Inkscape.app/Contents/Resources/bin/
 SVG2PDF       = inkscape
 SVG2PDF_FLAGS = 
 
